@@ -73,7 +73,7 @@ public:
     }
 };
 
-enum BoatSize { Submarine = 2, Destroyer = 3, Battleship = 4, Carrier = 5 };
+enum BoatSize { Submarine = 3, Destroyer = 2, Battleship = 4, Carrier = 5, Cruiser = 3 };
 void initGrid(int grid[][10]);
 void printBoard(int grid[][10]);
 void printGameBoard(int grid[][10]);
@@ -98,11 +98,11 @@ int main()
     setBoat(grid, Battleship, 3, boatList);
     setBoat(grid, Destroyer, 4, boatList);
     setBoat(grid, Destroyer, 5, boatList);
-    setBoat(grid, Destroyer, 6, boatList);
+    setBoat(grid, Submarine, 6, boatList);
     setBoat(grid, Submarine, 7, boatList);
     setBoat(grid, Submarine, 8, boatList);
-    setBoat(grid, Submarine, 9, boatList);
-    setBoat(grid, Submarine, 10, boatList);
+    setBoat(grid, Cruiser, 9, boatList);
+    setBoat(grid, Cruiser, 10, boatList);
 
     cout << "Welcome to Battleships.  Press c to play the game" << endl << endl;
     cout << "The board will show a 1 for a hit and a 9 for a miss" << endl << endl;
@@ -160,15 +160,15 @@ void printGameBoard(int grid[][10]) //This is the board that is printed for play
             }
             if (grid[i][j] == 1)  //if the space is a hit, print it
             {
-                cout << 1;
+                cout << "H";
             }
             else if (grid[i][j] == 9)  //if the space is a miss, print it
             {
-                cout << 9;
+                cout << "M";
             }
             else
             {
-                cout << 0;  //otherwise, just print a 0
+                cout << "~";  //otherwise, just print a 0
             }
 
             if (j != 9)
@@ -306,7 +306,7 @@ int resetColAndRow(int col, int& row, int BoatSize, char d)
 {
     switch (BoatSize) //Generate random column and row based on boat size so we don't go over the edge of the grid
     {
-    case Submarine:
+    case Submarine||Cruiser:
         if (d == 'h')
         {
             col = rand() % 8;
@@ -665,9 +665,9 @@ void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boa
                 c1.at(i) = c;
                 c++;
             }
-            //Submarine 3
-            Boat submarine3Boat('h', 2, r1, c1, 0, "Submarine 3");
-            boatList.push_back(submarine3Boat);
+            //Cruiser 1
+            Boat cruiser1Boat('h', 2, r1, c1, 0, "Cruiser 1");
+            boatList.push_back(cruiser1Boat);
         }
         else if (d == 'v')
         {
@@ -682,9 +682,9 @@ void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boa
             {
                 c1.at(i) = c;
             }
-            //Submarine 3
-            Boat submarine3Boat('v', 2, r1, c1, 0, "Submarine 3");
-            boatList.push_back(submarine3Boat);
+            //Cruiser 1
+            Boat cruiser1Boat('v', 2, r1, c1, 0, "Cruiser 1");
+            boatList.push_back(cruiser1Boat);
         }
         break;
     case 10:
@@ -701,9 +701,9 @@ void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boa
                 c1.at(i) = c;
                 c++;
             }
-            //Submarine 4
-            Boat submarine4Boat('h', 2, r1, c1, 0, "Submarine 4");
-            boatList.push_back(submarine4Boat);
+            //Cruiser 2
+            Boat cruiser2Boat('h', 2, r1, c1, 0, "Cruiser 2");
+            boatList.push_back(cruiser2Boat);
         }
         else if (d == 'v')
         {
@@ -718,9 +718,9 @@ void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boa
             {
                 c1.at(i) = c;
             }
-            //Submarine 4
-            Boat submarine4Boat('v', 2, r1, c1, 0, "Submarine 4");
-            boatList.push_back(submarine4Boat);
+            //Cruiser 2
+            Boat cruiser2Boat('v', 2, r1, c1, 0, "Cruiser 2");
+            boatList.push_back(cruiser2Boat);
         }
         break;
     }
@@ -805,10 +805,10 @@ void playGame(int grid[][10], vector<Boat>& boatList)
                     btname = boatList[9].getBoat(row, col);  //Check to see if boat is Submarine 4
                     cout << "You have bombed " << btname << "!" << endl;
                     boatList[9].setHit();
-                    sunk = boatList[9].checkSunk(Submarine);
+                    sunk = boatList[9].checkSunk(Cruiser);
                     if (sunk == 9)
                     {
-                        cout << "You have sunk Submarine 4." << endl;
+                        cout << "You have sunk Cruiser 1." << endl;
                     }
                 }
             }
