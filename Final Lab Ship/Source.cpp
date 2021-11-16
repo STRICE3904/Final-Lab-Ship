@@ -48,13 +48,13 @@ public:
         }
     }
 
-    //get boat grid coordinates
+    //get boat playerGuess coordinates
     void boatCoordinates()
     {
         cout << "Coordinates for boat " << name << endl << endl;
         for (int i = 0; i < length; i++)
         {
-            cout << "Grid [" << boatrow[i] << "][" << boatcol[i] << "]" << endl;
+            cout << "playerGuess [" << boatrow[i] << "][" << boatcol[i] << "]" << endl;
         }
         cout << endl;
     }
@@ -74,58 +74,71 @@ public:
 };
 
 enum BoatSize { Submarine = 3, Destroyer = 2, Battleship = 4, Carrier = 5, Cruiser = 3 };
-void initGrid(int grid[][10]);
-void printBoard(int grid[][10]);
-void printGameBoard(int grid[][10]);
+void initplayerGuess(int playerGuess[][10]);
+void printBoard(int playerGuess[][10], int computerGuess[][10]);
+void printComputerBoard(int computerGuess[][10]);
+void printPlayerBoard(int playerGuess[][10]);
 int resetColAndRow(int col, int& row, int BoatSize, char d);
 char getDirection(int d);
-int checkSpaces(int grid[][10], int c, int r, int s, char d);
-void editGrid(int grid[][10], int col, int row, int BoatSize, char dir);
-bool setBoat(int grid[][10], int BoatSize, int name, vector<Boat>& boatList);
-void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boat>& boatList, int name);
-void playGame(int grid[][10], vector<Boat>& boatList);
-int getSpace(int grid[][10], int row, int col);
+int checkSpaces(int playerGuess[][10], int c, int r, int s, char d);
+void editplayerGuess(int playerGuess[][10], int col, int row, int BoatSize, char dir);
+bool setBoat(int computerGuess[][10], int BoatSize, int name, vector<Boat>& boatList);
+bool placeBoat(int playerGuess[][10], int BoatSize, int name, vector<Boat>& boatList);
+void editBoatInfo(int playerGuess[][10], int c, int r, int BoatSize, char d, vector<Boat>& boatList, int name);
+void playGame(int playerGuess[][10], vector<Boat>& boatList);
+int getSpace(int playerGuess[][10], int row, int col);
 
 int main()
 {
-    int grid[10][10];
+    int playerGuess[10][10];
+    int computerGuess[10][10];
     vector<Boat> boatList;
     char play;
-    initGrid(grid);
-    //    printBoard(grid);  uncomment to see initialised grid
-    setBoat(grid, Carrier, 1, boatList);  //set the boats onto the grid
-    setBoat(grid, Battleship, 2, boatList);
-    setBoat(grid, Battleship, 3, boatList);
-    setBoat(grid, Destroyer, 4, boatList);
-    setBoat(grid, Destroyer, 5, boatList);
-    setBoat(grid, Submarine, 6, boatList);
-    setBoat(grid, Submarine, 7, boatList);
-    setBoat(grid, Submarine, 8, boatList);
-    setBoat(grid, Cruiser, 9, boatList);
-    setBoat(grid, Cruiser, 10, boatList);
+    initplayerGuess(playerGuess);
+    //    printBoard(playerGuess);  uncomment to see initialised playerGuess
+    setBoat(playerGuess, Carrier, 1, boatList);  //set the boats onto the playerGuess
+    setBoat(playerGuess, Battleship, 2, boatList);
+    setBoat(playerGuess, Battleship, 3, boatList);
+    setBoat(playerGuess, Destroyer, 4, boatList);
+    setBoat(playerGuess, Destroyer, 5, boatList);
+    setBoat(playerGuess, Submarine, 6, boatList);
+    setBoat(playerGuess, Submarine, 7, boatList);
+    setBoat(playerGuess, Submarine, 8, boatList);
+    setBoat(playerGuess, Cruiser, 9, boatList);
+    setBoat(playerGuess, Cruiser, 10, boatList);
 
+    setBoat(computerGuess, Carrier, 1, boatList);  //set the boats onto the playerGuess
+    setBoat(computerGuess, Battleship, 2, boatList);
+    setBoat(computerGuess, Battleship, 3, boatList);
+    setBoat(computerGuess, Destroyer, 4, boatList);
+    setBoat(computerGuess, Destroyer, 5, boatList);
+    setBoat(computerGuess, Submarine, 6, boatList);
+    setBoat(computerGuess, Submarine, 7, boatList);
+    setBoat(computerGuess, Submarine, 8, boatList);
+    setBoat(computerGuess, Cruiser, 9, boatList);
+    setBoat(computerGuess, Cruiser, 10, boatList);
     cout << "Welcome to Battleships.  Press c to play the game" << endl << endl;
-    cout << "The board will show a 1 for a hit and a 9 for a miss" << endl << endl;
+    cout << "The board will show a H for a hit and a M for a miss" << endl << endl;
     cin >> play;
     if (play == 'c')
     {
-        playGame(grid, boatList);
+        playGame(playerGuess, boatList);
     }
     return 0;
 }
 
-void initGrid(int grid[][10])
+void initplayerGuess(int playerGuess[][10])
 {
     for (int col = 0; col < 10; col++) //Outer column loop
     {
         for (int row = 0; row < 10; row++) //Inner row loop
         {
-            grid[col][row] = 0;
+            playerGuess[col][row] = 0;
         }
     }
 }
 
-void printBoard(int grid[][10])  //Print the board with the boats placed on it
+void printBoard(int playerGuess[][10], int computerGuess[][10])  //Print the board with the boats placed on it
 {
     cout << "   0|1|2|3|4|5|6|7|8|9" << endl << endl;
     for (int i = 0; i < 10; i++)  //column loop
@@ -136,7 +149,7 @@ void printBoard(int grid[][10])  //Print the board with the boats placed on it
             {
                 cout << i << "  "; //print row number and spaces before new row
             }
-            cout << grid[i][j];
+            cout << playerGuess[i][j];
             if (j != 9)
             {
                 cout << "|";
@@ -146,8 +159,7 @@ void printBoard(int grid[][10])  //Print the board with the boats placed on it
     }
     cout << endl;
 }
-
-void printGameBoard(int grid[][10]) //This is the board that is printed for playing the game.  You cannot see the boats
+void printComputerBoard(int computerGuess[][10])
 {
     cout << "   0|1|2|3|4|5|6|7|8|9" << endl << endl;
     for (int i = 0; i < 10; i++)  //column loop
@@ -158,11 +170,11 @@ void printGameBoard(int grid[][10]) //This is the board that is printed for play
             {
                 cout << i << "  "; //print row number and spaces before new row
             }
-            if (grid[i][j] == 1)  //if the space is a hit, print it
+            if (computerGuess[i][j] == 1)  //if the space is a hit, print it
             {
                 cout << "H";
             }
-            else if (grid[i][j] == 9)  //if the space is a miss, print it
+            else if (computerGuess[i][j] == 9)  //if the space is a miss, print it
             {
                 cout << "M";
             }
@@ -181,8 +193,42 @@ void printGameBoard(int grid[][10]) //This is the board that is printed for play
     cout << endl;
 }
 
-bool setBoat(int grid[][10], int BoatSize, int name, vector<Boat>& boatList)
-//This function places the individual boats onto the initialised grid
+void printPlayerBoard(int playerGuess[][10]) //This is the board that is printed for playing the game.  You cannot see the boats
+{
+    cout << "   0|1|2|3|4|5|6|7|8|9" << endl << endl;
+    for (int i = 0; i < 10; i++)  //column loop
+    {
+        for (int j = 0; j < 10; j++)  //row loop
+        {
+            if (j == 0)
+            {
+                cout << i << "  "; //print row number and spaces before new row
+            }
+            if (playerGuess[i][j] == 1)  //if the space is a hit, print it
+            {
+                cout << "H";
+            }
+            else if (playerGuess[i][j] == 9)  //if the space is a miss, print it
+            {
+                cout << "M";
+            }
+            else
+            {
+                cout << "~";  //otherwise, just print a 0
+            }
+
+            if (j != 9)
+            {
+                cout << "|";
+            }
+        }
+        cout << endl; //new line at end of column
+    }
+    cout << endl;
+}
+
+bool setBoat(int computerGuess[][10], int BoatSize, int name, vector<Boat>& boatList)
+//This function places the individual boats onto the initialised playerGuess
 {
     srand(time(0));
     int col = 0;
@@ -200,7 +246,7 @@ bool setBoat(int grid[][10], int BoatSize, int name, vector<Boat>& boatList)
     {
         if (d == 'h')
         {
-            cS = checkSpaces(grid, col, row, BoatSize, d);//check to make sure the boat can be placed without overlapping another boat
+            cS = checkSpaces(computerGuess, col, row, BoatSize, d);//check to make sure the boat can be placed without overlapping another boat
             if (cS == 1)//if the boat overlaps, generate another random column, row and direction and start the loop again
             {
                 d = getDirection(rand() % 10);
@@ -208,13 +254,13 @@ bool setBoat(int grid[][10], int BoatSize, int name, vector<Boat>& boatList)
                 cS == 0;
                 continue;
             }
-            editGrid(grid, col, row, BoatSize, d);//place the boat on the grid
-            editBoatInfo(grid, col, row, BoatSize, d, boatList, name);//create the boat object
+            editplayerGuess(computerGuess, col, row, BoatSize, d);//place the boat on the playerGuess
+            editBoatInfo(computerGuess, col, row, BoatSize, d, boatList, name);//create the boat object
             return 0;
         }//end of 'if horizontal'
         else if (d == 'v')
         {
-            cS = checkSpaces(grid, col, row, BoatSize, d);
+            cS = checkSpaces(computerGuess, col, row, BoatSize, d);
             if (cS == 1)
             {
                 d = getDirection(rand() % 10);
@@ -222,12 +268,55 @@ bool setBoat(int grid[][10], int BoatSize, int name, vector<Boat>& boatList)
                 cS == 0;
                 continue;
             }
-            editGrid(grid, col, row, BoatSize, d);
-            editBoatInfo(grid, col, row, BoatSize, d, boatList, name);
+            editplayerGuess(computerGuess, col, row, BoatSize, d);
+            editBoatInfo(computerGuess, col, row, BoatSize, d, boatList, name);
             return 0;
         }
     }//end of while loop
 }//end of setBoat function
+
+bool placeBoat(int playerGuess[][10], int BoatSize, int name, vector<Boat>& boatList)
+{
+    int col = 0;
+    int row = 0;
+    char d = 'v';
+    bool placementFailure = true;
+    char check = 'v';
+    int cS = 0;
+    cout << "Choose where to place " << name << "First input h for horizontal or v for vertical\n";
+    cin >> d;
+    cout << "Now choose the coordinate to center it ussing two numbers between 0 and 9(Ex: 1,2 or 1 2)";
+    cin >> col >> row;
+    while (placementFailure)
+    {
+        if (d == 'h')
+        {
+            cS = checkSpaces(playerGuess, col, row, BoatSize, d);//check to make sure the boat can be placed without overlapping another boat
+            if (cS == 1)//if the boat overlaps, generate another random column, row and direction and start the loop again
+            {
+                cout << "Choose a new placement this one is overlaping(Ex: h, 1, 2 or v, 5, 8)";
+                cin >> d >> col >> row;
+                continue;
+            }
+            editplayerGuess(playerGuess, col, row, BoatSize, d);//place the boat on the playerGuess
+            editBoatInfo(playerGuess, col, row, BoatSize, d, boatList, name);//create the boat object
+            return 0;
+        }//end of 'if horizontal'
+        else if (d == 'v')
+        {
+            cS = checkSpaces(playerGuess, col, row, BoatSize, d);
+            if (cS == 1)
+            {
+                cout << "Choose a new placement this one is overlaping(Ex: h, 1, 2 or v, 5, 8)";
+                cin >> d >> col >> row;
+                continue;
+            }
+            editplayerGuess(playerGuess, col, row, BoatSize, d);
+            editBoatInfo(playerGuess, col, row, BoatSize, d, boatList, name);
+            return 0;
+        }
+    }
+}
 
 char getDirection(int d)
 {
@@ -241,14 +330,14 @@ char getDirection(int d)
     }
 }
 
-void editGrid(int grid[][10], int col, int row, int BoatSize, char dir)
-//This function puts the numbers that correspond to the boat type on the grid
+void editplayerGuess(int playerGuess[][10], int col, int row, int BoatSize, char dir)
+//This function puts the numbers that correspond to the boat type on the playerGuess
 {
     if (dir == 'h')
     {
         for (int i = 0; i < BoatSize; i++)
         {
-            grid[row][col] = BoatSize;
+            playerGuess[row][col] = BoatSize;
             col++;
             cout << endl;
         }
@@ -257,7 +346,7 @@ void editGrid(int grid[][10], int col, int row, int BoatSize, char dir)
     {
         for (int i = 0; i < BoatSize; i++)
         {
-            grid[row][col] = BoatSize;
+            playerGuess[row][col] = BoatSize;
             row++;
             cout << endl;
         }
@@ -266,18 +355,18 @@ void editGrid(int grid[][10], int col, int row, int BoatSize, char dir)
     {
         cout << "Error!  No direction passed" << endl;
     }
-    //printBoard(grid);  //uncomment to see finished grid
+    //printBoard(playerGuess);  //uncomment to see finished playerGuess
 }
 
-int checkSpaces(int grid[][10], int c, int r, int s, char d)
-//check the grid to make sure that none of the boats will overlap
+int checkSpaces(int playerGuess[][10], int c, int r, int s, char d)
+//check the playerGuess to make sure that none of the boats will overlap
 {
     int check = 0;
     if (d == 'h')
     {
         for (int i = c; i < c + s; i++)
         {
-            check = grid[r][i];
+            check = playerGuess[r][i];
             if (check != 0)
             {
                 return 1;
@@ -290,7 +379,7 @@ int checkSpaces(int grid[][10], int c, int r, int s, char d)
     {
         for (int i = r; i < r + s; i++)
         {
-            check = grid[i][c];
+            check = playerGuess[i][c];
             if (check != 0)
             {
                 return 1;
@@ -304,7 +393,7 @@ int checkSpaces(int grid[][10], int c, int r, int s, char d)
 
 int resetColAndRow(int col, int& row, int BoatSize, char d)
 {
-    switch (BoatSize) //Generate random column and row based on boat size so we don't go over the edge of the grid
+    switch (BoatSize) //Generate random column and row based on boat size so we don't go over the edge of the playerGuess
     {
     case Submarine||Cruiser:
         if (d == 'h')
@@ -357,7 +446,7 @@ int resetColAndRow(int col, int& row, int BoatSize, char d)
     return col;
 }
 
-void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boat>& boatList, int name)
+void editBoatInfo(int playerGuess[][10], int c, int r, int BoatSize, char d, vector<Boat>& boatList, int name)
 //This function creates the boat objects
 {
     switch (name)
@@ -726,7 +815,7 @@ void editBoatInfo(int grid[][10], int c, int r, int BoatSize, char d, vector<Boa
     }
 }
 
-void playGame(int grid[][10], vector<Boat>& boatList)
+void playGame(int playerGuess[][10], vector<Boat>& boatList)
 {
     bool gameInProgress = true;
     int row = 0;
@@ -738,31 +827,26 @@ void playGame(int grid[][10], vector<Boat>& boatList)
     char d = 'g';
     string btname = "";
     int sunk = 0;
-
-    while (gameInProgress)
+    /*while (gameInProgress)
     {
-        printGameBoard(grid);
-        //printBoard(grid);  //uncomment to see the game board with the boats on it
-        cout << "Enter a row coordinate: ";
-        cin >> row;
-        cout << "Enter a column coordinate: ";
-        cin >> col;
-        cout << endl;
-        guess++;
-        space = getSpace(grid, row, col);
+        srand((unsigned)time(0));
+	    row = 1 + (rand() % 10);
+        col = 1 + (rand() % 10);
+
+        space = getSpace(playerGuess, row, col);
 
         switch (space)
         {
         case 0:
             cout << "You have missed" << endl;
-            grid[row][col] = 9;
+            playerGuess[row][col] = 9;
             miss++;
             break;
         case 1:
             cout << "This space has already been bombed.  You have wasted a guess!" << endl;
             break;
         case 2:
-            grid[row][col] = 1;
+            playerGuess[row][col] = 1;
             hit++;
 
             btname = boatList[6].getBoat(row, col);  //Check to see if boat is Submarine 1
@@ -815,7 +899,7 @@ void playGame(int grid[][10], vector<Boat>& boatList)
             btname.clear();
             break;
         case 3:
-            grid[row][col] = 1;
+            playerGuess[row][col] = 1;
             hit++;
 
             btname = boatList[3].getBoat(row, col);  //Check to see if boat is Destroyer 1
@@ -858,7 +942,7 @@ void playGame(int grid[][10], vector<Boat>& boatList)
             btname.clear();
             break;
         case 4:
-            grid[row][col] = 1;
+            playerGuess[row][col] = 1;
             hit++;
 
             btname = boatList[1].getBoat(row, col);  //Check to see if boat is Battleship 1
@@ -887,7 +971,171 @@ void playGame(int grid[][10], vector<Boat>& boatList)
             break;
         case 5:
             cout << "You have bombed the aircraft carrier! " << endl;
-            grid[row][col] = 1;
+            playerGuess[row][col] = 1;
+            hit++;
+            boatList[0].setHit();
+            sunk = boatList[0].checkSunk(Carrier);
+            if (sunk == 9)
+            {
+                cout << "You have sunk the aircraft carrier." << endl;
+            }
+            break;
+        }//end of switch
+        if (hit == 30)
+        {
+            gameInProgress = false;
+        }
+    }//end of while game is playing loop
+    */
+    while (gameInProgress)
+    {
+        printPlayerBoard(playerGuess);
+        //printBoard(playerGuess);  //uncomment to see the game board with the boats on it
+        cout << "Enter a row coordinate: ";
+        cin >> row;
+        cout << "Enter a column coordinate: ";
+        cin >> col;
+        cout << endl;
+        guess++;
+        space = getSpace(playerGuess, row, col);
+
+        switch (space)
+        {
+        case 0:
+            cout << "You have missed" << endl;
+            playerGuess[row][col] = 9;
+            miss++;
+            break;
+        case 1:
+            cout << "This space has already been bombed.  You have wasted a guess!" << endl;
+            break;
+        case 2:
+            playerGuess[row][col] = 1;
+            hit++;
+
+            btname = boatList[6].getBoat(row, col);  //Check to see if boat is Submarine 1
+            if (btname == "Submarine 1")
+            {
+                cout << "You have bombed " << btname << "!" << endl;
+                boatList[6].setHit();
+                sunk = boatList[6].checkSunk(Submarine);
+                if (sunk == 9)
+                {
+                    cout << "You have sunk Submarine 1." << endl;
+                }
+            }
+            else if (btname.empty())
+            {
+                btname = boatList[7].getBoat(row, col);  //Check to see if boat is Submarine 2
+                if (btname == "Submarine 2")
+                {
+                    cout << "You have bombed " << btname << "!" << endl;
+                    boatList[7].setHit();
+                    sunk = boatList[7].checkSunk(Submarine);
+                    if (sunk == 9)
+                    {
+                        cout << "You have sunk Submarine 2." << endl;
+                    }
+                }
+                else if (btname.empty())
+                {
+                    btname = boatList[8].getBoat(row, col);  //Check to see if boat is Submarine 3
+                    cout << "You have bombed " << btname << "!" << endl;
+                    boatList[8].setHit();
+                    sunk = boatList[8].checkSunk(Submarine);
+                    if (sunk == 9)
+                    {
+                        cout << "You have sunk Submarine 3." << endl;
+                    }
+                }
+                else if (btname.empty())
+                {
+                    btname = boatList[9].getBoat(row, col);  //Check to see if boat is Submarine 4
+                    cout << "You have bombed " << btname << "!" << endl;
+                    boatList[9].setHit();
+                    sunk = boatList[9].checkSunk(Cruiser);
+                    if (sunk == 9)
+                    {
+                        cout << "You have sunk Cruiser 1." << endl;
+                    }
+                }
+            }
+            btname.clear();
+            break;
+        case 3:
+            playerGuess[row][col] = 1;
+            hit++;
+
+            btname = boatList[3].getBoat(row, col);  //Check to see if boat is Destroyer 1
+            if (btname == "Destroyer 1")
+            {
+                cout << "You have bombed " << btname << "!" << endl;
+                boatList[3].setHit();
+                sunk = boatList[3].checkSunk(Destroyer);
+                if (sunk == 9)
+                {
+                    cout << "You have sunk Destroyer 1." << endl;
+                }
+            }
+            else if (btname.empty())
+            {
+                btname = boatList[4].getBoat(row, col);  //Check to see if boat is Destroyer 2
+                if (btname == "Destroyer 2")
+                {
+                    cout << "You have bombed " << btname << "!" << endl;
+                    boatList[4].setHit();
+                    sunk = boatList[4].checkSunk(Destroyer);
+                    if (sunk == 9)
+                    {
+                        cout << "You have sunk Destroyer 2." << endl;
+                    }
+                }
+                else if (btname.empty())
+                {
+                    btname = boatList[5].getBoat(row, col);  //Check to see if boat is Destroyer 3
+                    cout << "You have bombed " << btname << "!" << endl;
+                    boatList[5].setHit();
+                    sunk = boatList[5].checkSunk(Destroyer);
+                    cout << "sunk is " << sunk << endl;
+                    if (sunk == 9)
+                    {
+                        cout << "You have sunk Destroyer 3." << endl;
+                    }
+                }
+            }
+            btname.clear();
+            break;
+        case 4:
+            playerGuess[row][col] = 1;
+            hit++;
+
+            btname = boatList[1].getBoat(row, col);  //Check to see if boat is Battleship 1
+            if (btname == "Battleship 1")
+            {
+                cout << "You have bombed " << btname << "!" << endl;
+                boatList[1].setHit();
+                sunk = boatList[1].checkSunk(Battleship);
+                if (sunk == 9)
+                {
+                    cout << "You have sunk Battleship 1." << endl;
+                }
+            }
+            if (btname.empty())
+            {
+                btname = boatList[2].getBoat(row, col);  //Check to see if boat is Battleship 2
+                cout << "You have bombed " << btname << "!" << endl;
+                boatList[2].setHit();
+                sunk = boatList[2].checkSunk(Battleship);
+                if (sunk == 9)
+                {
+                    cout << "You have sunk Battleship 2." << endl;
+                }
+            }
+            btname.clear();
+            break;
+        case 5:
+            cout << "You have bombed the aircraft carrier! " << endl;
+            playerGuess[row][col] = 1;
             hit++;
             boatList[0].setHit();
             sunk = boatList[0].checkSunk(Carrier);
@@ -907,9 +1155,9 @@ void playGame(int grid[][10], vector<Boat>& boatList)
 
 }//end of playGame function
 
-int getSpace(int grid[][10], int row, int col)
+int getSpace(int playerGuess[][10], int row, int col)
 {
     int space = 0;
-    space = grid[row][col];
+    space = playerGuess[row][col];
     return space;
 }
