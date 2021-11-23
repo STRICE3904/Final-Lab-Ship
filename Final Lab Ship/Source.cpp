@@ -102,13 +102,13 @@ int main()
     setBoat(playerGuess, Destroyer, 3, boatListPlayer);
     setBoat(playerGuess, Submarine, 4, boatListPlayer);
     setBoat(playerGuess, Cruiser, 5, boatListPlayer);
-
-    setBoat(computerGuess, Carrier, 1, boatListComputer);  //set the boats onto the playerGuess
-    setBoat(computerGuess, Battleship, 2, boatListComputer);
-    setBoat(computerGuess, Destroyer, 3, boatListComputer);
-    setBoat(computerGuess, Submarine, 4, boatListComputer);
-    setBoat(computerGuess, Cruiser, 5, boatListComputer);
     cout << "Welcome to Battleships.  Press c to play the game" << endl << endl;
+    placeBoat(computerGuess, Carrier, 1, boatListComputer);  //set the boats onto the playerGuess
+    placeBoat(computerGuess, Battleship, 2, boatListComputer);
+    placeBoat(computerGuess, Destroyer, 3, boatListComputer);
+    placeBoat(computerGuess, Submarine, 4, boatListComputer);
+    placeBoat(computerGuess, Cruiser, 5, boatListComputer);
+
     cout << "The board will show a H for a hit and a M for a miss" << endl << endl;
     cin >> play;
     if (play == 'c')
