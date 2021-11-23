@@ -113,7 +113,7 @@ int main()
     cin >> play;
     if (play == 'c')
     {
-        playGame(playerGuess, boatListPlayer, boatListComputer);
+        playGame(playerGuess, computerGuess, boatListPlayer, boatListComputer);
     }
     else
     {
@@ -913,9 +913,9 @@ void playGame(int playerGuess[][10], int computerGuess[][10], vector<Boat>& boat
         }//end of switch
 
 
-        cout << "Enter a row coordinate: ";
+        cout << "Enter a row coordinate to hit: ";
         cin >> row;
-        cout << "Enter a column coordinate: ";
+        cout << "Enter a column coordinate to hit: ";
         cin >> col;
         cout << endl;
         guess++;
@@ -928,7 +928,7 @@ void playGame(int playerGuess[][10], int computerGuess[][10], vector<Boat>& boat
             miss++;
             break;
         case 1:
-            cout << "This space has already been bombed.  You have wasted a guess!" << endl;
+            cout << "This space has already been bombed.  Your guess was wasted!" << endl;
             break;
         case 2:
             playerGuess[row][col] = 1;
