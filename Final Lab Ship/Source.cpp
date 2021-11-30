@@ -74,6 +74,7 @@ public:
 };
 
 enum BoatSize { Submarine = 3, Destroyer = 2, Battleship = 4, Carrier = 5, Cruiser = 3 };
+enum BoatType { DESTROYER, SUBMARINE, CRUSIER, BATTLESHIP, CARRIER };
 void initplayerGuess(int playerGuess[][10]);
 void printBoard(int playerGuess[][10], int computerGuess[][10]);
 void printComputerBoard(int computerGuess[][10]);
@@ -225,50 +226,213 @@ void printPlayerBoard(int playerGuess[][10]) //This is the board that is printed
 bool setBoat(int computerGuess[][10], int BoatSize, int name, vector<Boat>& boatListPlayer)
 //This function places the individual boats onto the initialised playerGuess
 {
-    srand(time(0));
-    int col = 0;
-    int row = 0;
-    char d = 'v';
-    bool placementFailure = true;
-    char check = 'v';
-    int cS = 0;
-
-    d = getDirection(rand() % 10);  //randomly pick which direction to place boat
-    col = resetColAndRow(col, row, BoatSize, d);  //This function returns a random column and row (by reference) of where
-                                                //to place the boat
-
-    while (placementFailure)
+    for (BoatType ship = DESTROYER; ship <= CARRIER; ship = BoatType(ship + 1))
     {
-        if (d == 'h')
+        //Generate a 1 or 2 randomly to determine to orient verically or horizontally.
+        int ranShipOrientation = rand() % 2 + 1;
+        int shipLength;
+
+        switch (ship)
         {
-            cS = checkSpaces(computerGuess, col, row, BoatSize, d);//check to make sure the boat can be placed without overlapping another boat
-            if (cS == 1)//if the boat overlaps, generate another random column, row and direction and start the loop again
-            {
-                d = getDirection(rand() % 10);
-                col = resetColAndRow(col, row, BoatSize, d);
-                cS == 0;
-                continue;
-            }
-            editplayerGuess(computerGuess, col, row, BoatSize, d);//place the boat on the playerGuess
-            editBoatInfo(computerGuess, col, row, BoatSize, d, boatListPlayer, name);//create the boat object
-            return 0;
-        }//end of 'if horizontal'
-        else if (d == 'v')
-        {
-            cS = checkSpaces(computerGuess, col, row, BoatSize, d);
-            if (cS == 1)
-            {
-                d = getDirection(rand() % 10);
-                col = resetColAndRow(col, row, BoatSize, d);
-                cS == 0;
-                continue;
-            }
-            editplayerGuess(computerGuess, col, row, BoatSize, d);
-            editBoatInfo(computerGuess, col, row, BoatSize, d, boatListPlayer, name);
-            return 0;
+        case DESTROYER:
+
+            shipLength = 2;
+
+            if (ranShipOrientation == 1)
+                AddShipVertical(shipLength);
+            else
+                AddShipHorizontal(shipLength);
+
+            break;
+
+        case SUBMARINE:
+
+            shipLength = 3;
+
+            if (ranShipOrientation == 1)
+                AddShipVertical(shipLength);
+            else
+                AddShipHorizontal(shipLength);
+
+            break;
+
+        case CRUSIER:
+
+            shipLength = 3;
+
+            if (ranShipOrientation == 1)
+                AddShipVertical(shipLength);
+            else
+                AddShipHorizontal(shipLength);
+
+            break;
+
+        case BATTLESHIP:
+
+            shipLength = 4;
+
+            if (ranShipOrientation == 1)
+                AddShipVertical(shipLength);
+            else
+                AddShipHorizontal(shipLength);
+
+            break;
+
+        case CARRIER:
+
+            shipLength = 5;
+
+            if (ranShipOrientation == 1)
+                AddShipVertical(shipLength);
+            else
+                AddShipHorizontal(shipLength);
+
+            break;
         }
-    }//end of while loop
-}//end of setBoat function
+    }
+}
+
+void AddShipVertical(int shipLength, int computerGuess[][10], )
+{
+    //This bool determines if the function body should be repeated with a new random number because the first random number caused overlap
+    bool isShipOverlap;
+    do
+    {
+        //Generate a random column index
+        int ranColumn = rand() % 10;
+
+        isShipOverlap = IsComputerShipOverlap(ranColumn, shipLength, UP);
+
+        if (isShipOverlap == false) //If no ship is found in the validation read
+        {
+            for (shipLength; shipLength > 0; --shipLength)
+            {
+                computerGuess[shipLength][ranColumn] = '#';
+            }
+        }
+
+    } while (isShipOverlap);
+}
+
+void AddShipHorizontal(int shipLength)
+{
+    //This bool determines if the function body should be repeated with a new random number because the first random number caused overlap
+    bool isShipOverlap;
+    do
+    {
+        //Generate a random row index
+        int ranRow = rand() % 10;
+
+        //IsComputerShipOverlap() will return a bool value that determines if there is ship overlap or not
+        isShipOverlap = IsComputerShipOverlap(ranRow, shipLength, LEFT);
+
+        //If there wasn't ship overlap
+        if (isShipOverlap == false)
+        {
+            //creates ship horizontally
+            for (shipLength; shipLength > 0; --shipLength)
+            {
+                computer.shipArray[ranRow][shipLength] = '#';
+            }
+        }
+    } while (isShipOverlap);
+
+}
+
+bool IsComputerShipOverlap(int ranRowsorColumns, int shipLength, orientation shipDirection)
+{
+    if (shipDirection == UP) //Verifying if a column for a ship
+    {
+        //Does initial read of area where a ship will be added to check if a ship is already there.
+        for (shipLength; shipLength > 0; --shipLength)
+        {
+            //Creates a ship vertically 
+            if (computer.shipArray[shipLength][ranRowsorColumns] == '#')
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    else if (shipDirection == LEFT) //verifying if a row for a ship
+    {
+        for (shipLength; shipLength > 0; --shipLength)
+        {
+            if (computer.shipArray[ranRowsorColumns][shipLength] == '#')
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+void ValidateUserInput(int& shipLength)
+{
+    //This bool is a loop control that is set to true if the user has overlapping ships or out-of-bounds ships
+    bool isValidInput;
+
+    //Identifiers for user input
+    int row;
+    int column;
+    string shipOrientation;
+
+    do
+    {
+        isValidInput = false;
+
+        cout << "\nEnter the starting x-coordinate for your ship: ";
+        cin >> column;
+
+        //Loops while user provides invalid input
+        while (!cin || column < 0 || column > 10)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+
+            InvalidInputMessage();
+            cin >> column;
+        }
+
+        cout << "\nEnter the starting y-coordinate for your ship: ";
+        cin >> row;
+
+        //Loops while user provides invalid input
+        while (!cin || row < 0 || row > 10)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+
+            InvalidInputMessage();
+            cin >> row;
+        }
+
+        cout << "\nEnter the orientation you want your ship to have (\"up\", \"down\", \"left\", or \"right\"): ";
+        cin >> shipOrientation;
+
+        //While the first letter of shipOrientation string is NOT equal to U, D, R, or L
+        while (toupper(shipOrientation[0]) != 'U' && toupper(shipOrientation[0]) != 'D' && toupper(shipOrientation[0]) != 'L' && toupper(shipOrientation[0]) != 'R')
+        {
+            cout << "\n\nInvalid input - input should be one of the following (\"up\", \"down\", \"left\", or \"right\")\a\n";
+            cout << "Try again: ";
+            cin >> shipOrientation;
+        }
+
+        //These are decremented by one from the values the user entered (1 - 10). This way they function as indexes for the gameboard array which has valid indexes of 0 - 9 for the coming function calls.
+        row--;
+        column--;
+
+        //Checks for out of array bounds or ship overlap
+        isValidInput = IsValidOrientation(row, column, shipOrientation, shipLength);
+
+        //If input array indexes are not invalid
+        if (isValidInput == true)
+            PlaceUserShip(row, column, shipLength, shipOrientation);
+
+    } while (!isValidInput); //If overlap or out-of-array bounds then this function loops until the user enters valid data
+}
 
 bool placeBoat(int playerGuess[][10], int BoatSize, int name, vector<Boat>& boatListPlayer)
 {
